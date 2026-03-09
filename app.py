@@ -2,7 +2,8 @@
 DoseTrack V4 — Minimal cumulative dose tracker with named accounts.
 
 Same PK/PD engine as V3. Interface: name → date/time/mg → curve.
-Data persisted in SQLite (doses.db) keyed by username.
+Data persisted in Supabase (Postgres) when DATABASE_URL secret is set,
+falls back to local SQLite for development.
 """
 
 import sys
@@ -19,59 +20,84 @@ from datetime import datetime, timedelta, date as date_type, time as time_type
 
 from dosetrack import simulate, Dose
 
-# ── Database ──────────────────────────────────────────────────────────────
+# ── Database — Supabase (prod) or SQLite (local dev) ─────────────────────
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "doses.db")
+_USE_POSTGRES = "DATABASE_URL" in st.secrets
+
+
+def _pg():
+    import psycopg2
+    return psycopg2.connect(st.secrets["DATABASE_URL"])
 
 
 def db_init():
-    con = sqlite3.connect(DB_PATH)
-    con.execute("""
-        CREATE TABLE IF NOT EXISTS doses (
-            id       INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT    NOT NULL,
-            dt       TEXT    NOT NULL,
-            mg       REAL    NOT NULL
-        )
-    """)
-    con.commit()
-    con.close()
+    if _USE_POSTGRES:
+        con = _pg()
+        con.cursor().execute("""
+            CREATE TABLE IF NOT EXISTS doses (
+                id       SERIAL PRIMARY KEY,
+                username TEXT   NOT NULL,
+                dt       TEXT   NOT NULL,
+                mg       REAL   NOT NULL
+            )
+        """)
+        con.commit(); con.close()
+    else:
+        con = sqlite3.connect(DB_PATH)
+        con.execute("""
+            CREATE TABLE IF NOT EXISTS doses (
+                id       INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT    NOT NULL,
+                dt       TEXT    NOT NULL,
+                mg       REAL    NOT NULL
+            )
+        """)
+        con.commit(); con.close()
 
 
 def db_load(username: str) -> list[dict]:
-    con = sqlite3.connect(DB_PATH)
-    rows = con.execute(
-        "SELECT id, dt, mg FROM doses WHERE username=? ORDER BY dt",
-        (username,)
-    ).fetchall()
-    con.close()
+    if _USE_POSTGRES:
+        con = _pg(); cur = con.cursor()
+        cur.execute("SELECT id, dt, mg FROM doses WHERE username=%s ORDER BY dt", (username,))
+        rows = cur.fetchall(); con.close()
+    else:
+        con = sqlite3.connect(DB_PATH)
+        rows = con.execute("SELECT id, dt, mg FROM doses WHERE username=? ORDER BY dt", (username,)).fetchall()
+        con.close()
     return [{"id": r[0], "dt": datetime.fromisoformat(r[1]), "mg": r[2]} for r in rows]
 
 
 def db_insert(username: str, dt: datetime, mg: float) -> int:
-    con = sqlite3.connect(DB_PATH)
-    cur = con.execute(
-        "INSERT INTO doses (username, dt, mg) VALUES (?, ?, ?)",
-        (username, dt.isoformat(), mg)
-    )
-    row_id = cur.lastrowid
-    con.commit()
-    con.close()
+    if _USE_POSTGRES:
+        con = _pg(); cur = con.cursor()
+        cur.execute("INSERT INTO doses (username, dt, mg) VALUES (%s, %s, %s) RETURNING id",
+                    (username, dt.isoformat(), mg))
+        row_id = cur.fetchone()[0]; con.commit(); con.close()
+    else:
+        con = sqlite3.connect(DB_PATH)
+        cur = con.execute("INSERT INTO doses (username, dt, mg) VALUES (?, ?, ?)",
+                          (username, dt.isoformat(), mg))
+        row_id = cur.lastrowid; con.commit(); con.close()
     return row_id
 
 
 def db_delete(row_id: int):
-    con = sqlite3.connect(DB_PATH)
-    con.execute("DELETE FROM doses WHERE id=?", (row_id,))
-    con.commit()
-    con.close()
+    if _USE_POSTGRES:
+        con = _pg(); con.cursor().execute("DELETE FROM doses WHERE id=%s", (row_id,))
+        con.commit(); con.close()
+    else:
+        con = sqlite3.connect(DB_PATH)
+        con.execute("DELETE FROM doses WHERE id=?", (row_id,)); con.commit(); con.close()
 
 
 def db_clear(username: str):
-    con = sqlite3.connect(DB_PATH)
-    con.execute("DELETE FROM doses WHERE username=?", (username,))
-    con.commit()
-    con.close()
+    if _USE_POSTGRES:
+        con = _pg(); con.cursor().execute("DELETE FROM doses WHERE username=%s", (username,))
+        con.commit(); con.close()
+    else:
+        con = sqlite3.connect(DB_PATH)
+        con.execute("DELETE FROM doses WHERE username=?", (username,)); con.commit(); con.close()
 
 
 db_init()

@@ -6,4 +6,4 @@ doses.db
 test_plot.png
 .coverage
 .pytest_cache/
-.streamlit/
+.streamlit/secrets.toml
