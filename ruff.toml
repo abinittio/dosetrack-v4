@@ -1,0 +1,5 @@
+[lint]
+select = ["E", "F", "W"]
+ignore = ["E501"]
+
+exclude = ["dosetrack/"]  # engine module copied from v3, not linted
