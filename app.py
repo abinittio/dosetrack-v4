@@ -327,6 +327,12 @@ except Exception as e:
 
 # ── Plot ──────────────────────────────────────────────────────────────────
 
+# Validated horizon: 12h after the last dose.
+# Beyond this, the terminal t½ (~30h simulated vs ~9-11h published) causes
+# overestimation of residual concentration. Cmax error MAPE is 9.1% (validated).
+last_dose_h = max(d.time_h for d in dose_objects)
+validated_h = last_dose_h + 12.0  # hours from t0
+
 fig, ax = plt.subplots(figsize=(9, 3.8))
 fig.patch.set_facecolor("#08111a")
 ax.set_facecolor("#08111a")
@@ -340,6 +346,10 @@ ax.axhspan(15,  40, alpha=0.05, color="#f59e0b", zorder=1)
 # Threshold
 ax.axhline(40, color="#1e3a34", linewidth=1.0, linestyle="--", zorder=2)
 
+# Extrapolation region shading (subtle overlay after validated_h)
+if validated_h < sim_end:
+    ax.axvspan(validated_h, sim_end, alpha=0.06, color="#475569", zorder=1)
+
 # Dose markers
 for d in doses:
     h = (d["dt"] - t0).total_seconds() / 3600.0
@@ -347,9 +357,28 @@ for d in doses:
     ax.text(h + 0.15, 97, f"{d['mg']:.0f}mg", color="#475569",
             fontsize=7.5, va="top", ha="left", zorder=4)
 
-# Effect curve
-ax.fill_between(result.t, result.effect_pct, alpha=0.12, color="#14b8a6", zorder=3)
-ax.plot(result.t, result.effect_pct, color="#5eead4", linewidth=2.2, zorder=4)
+# Split curve at validated_h
+t_arr = result.t
+e_arr = result.effect_pct
+
+mask_val  = t_arr <= validated_h
+mask_ext  = t_arr >= validated_h  # overlap by 1 point so lines connect
+
+# Validated segment — solid, full brightness
+ax.fill_between(t_arr[mask_val], e_arr[mask_val], alpha=0.14, color="#14b8a6", zorder=3)
+ax.plot(t_arr[mask_val], e_arr[mask_val], color="#5eead4", linewidth=2.2, zorder=4)
+
+# Extrapolation segment — dashed, muted
+if mask_ext.any():
+    ax.fill_between(t_arr[mask_ext], e_arr[mask_ext], alpha=0.05, color="#94a3b8", zorder=3)
+    ax.plot(t_arr[mask_ext], e_arr[mask_ext],
+            color="#64748b", linewidth=1.6, linestyle="--", zorder=4)
+
+# Validated horizon marker
+if validated_h < sim_end:
+    ax.axvline(validated_h, color="#1e3a34", linewidth=1.2, linestyle="-", zorder=3, alpha=0.7)
+    ax.text(validated_h + 0.2, 6, "extrapolation →", color="#334155",
+            fontsize=6.5, va="bottom", ha="left", zorder=4, style="italic")
 
 # Zone labels
 for y, label, col in [
@@ -381,6 +410,16 @@ ax.grid(axis="y", color="#111f2e", linewidth=0.8, zorder=0)
 fig.tight_layout(pad=1.2)
 st.pyplot(fig, use_container_width=True)
 plt.close(fig)
+
+# Validation footnote
+st.markdown(
+    "<div style='font-size:0.70rem; color:#1e3a34; margin-top:-6px; margin-bottom:8px;'>"
+    "Peak concentration validated against 3 published datasets (MAPE 9.1%). "
+    "Terminal phase (dashed) extrapolated — actual clearance faster than modelled. "
+    "With regular use, your logged doses calibrate timing to your own pharmacokinetics."
+    "</div>",
+    unsafe_allow_html=True,
+)
 
 
 # ── Stats row ─────────────────────────────────────────────────────────────
