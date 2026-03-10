@@ -28,7 +28,10 @@ _USE_POSTGRES = "DATABASE_URL" in st.secrets
 
 def _pg():
     import psycopg2
-    return psycopg2.connect(st.secrets["DATABASE_URL"])
+    url = st.secrets["DATABASE_URL"]
+    if "sslmode" not in url:
+        url += ("&" if "?" in url else "?") + "sslmode=require"
+    return psycopg2.connect(url)
 
 
 def db_init():
