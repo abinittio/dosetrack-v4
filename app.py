@@ -29,26 +29,35 @@ _USE_POSTGRES = "DATABASE_URL" in st.secrets
 def _pg():
     import psycopg2
     import re
-    raw = st.secrets["DATABASE_URL"]
-    # Manual regex parse — avoids urllib choking on non-integer port strings
-    m = re.match(
-        r"[a-z+]+://([^:@]+):([^@]+)@([^:/]+)(?::(\d+))?/([^?#]+)",
-        raw,
-    )
-    if m:
-        user, password, host, port, dbname = m.groups()
-        return psycopg2.connect(
-            host=host,
-            port=int(port) if port else 5432,
-            dbname=dbname,
-            user=user,
-            password=password,
-            sslmode="require",
-            connect_timeout=10,
+    import socket
+
+    # Streamlit Cloud routes IPv6 by default; Supabase direct host needs IPv4
+    _orig = socket.getaddrinfo
+    def _ipv4_only(host, port, family=0, *a, **kw):
+        return _orig(host, port, socket.AF_INET, *a, **kw)
+    socket.getaddrinfo = _ipv4_only
+
+    try:
+        raw = st.secrets["DATABASE_URL"]
+        m = re.match(
+            r"[a-z+]+://([^:@]+):([^@]+)@([^:/]+)(?::(\d+))?/([^?#]+)",
+            raw,
         )
-    # Fallback: set SSL via env var and pass raw URL
-    os.environ.setdefault("PGSSLMODE", "require")
-    return psycopg2.connect(raw)
+        if m:
+            user, password, host, port, dbname = m.groups()
+            return psycopg2.connect(
+                host=host,
+                port=int(port) if port else 5432,
+                dbname=dbname,
+                user=user,
+                password=password,
+                sslmode="require",
+                connect_timeout=10,
+            )
+        os.environ.setdefault("PGSSLMODE", "require")
+        return psycopg2.connect(raw)
+    finally:
+        socket.getaddrinfo = _orig
 
 
 def db_init():
