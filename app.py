@@ -53,7 +53,11 @@ def _pg():
 
 def db_init():
     if _USE_POSTGRES:
-        con = _pg()
+        try:
+            con = _pg()
+        except Exception as e:
+            st.error(f"Database connection failed: {type(e).__name__}: {e}")
+            st.stop()
         con.cursor().execute("""
             CREATE TABLE IF NOT EXISTS doses (
                 id       SERIAL PRIMARY KEY,
