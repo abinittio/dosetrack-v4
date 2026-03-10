@@ -28,18 +28,27 @@ _USE_POSTGRES = "DATABASE_URL" in st.secrets
 
 def _pg():
     import psycopg2
-    from urllib.parse import urlparse
+    import re
     raw = st.secrets["DATABASE_URL"]
-    r = urlparse(raw)
-    return psycopg2.connect(
-        host=r.hostname,
-        port=r.port or 5432,
-        dbname=r.path.lstrip("/"),
-        user=r.username,
-        password=r.password,
-        sslmode="require",
-        connect_timeout=10,
+    # Manual regex parse — avoids urllib choking on non-integer port strings
+    m = re.match(
+        r"[a-z+]+://([^:@]+):([^@]+)@([^:/]+)(?::(\d+))?/([^?#]+)",
+        raw,
     )
+    if m:
+        user, password, host, port, dbname = m.groups()
+        return psycopg2.connect(
+            host=host,
+            port=int(port) if port else 5432,
+            dbname=dbname,
+            user=user,
+            password=password,
+            sslmode="require",
+            connect_timeout=10,
+        )
+    # Fallback: set SSL via env var and pass raw URL
+    os.environ.setdefault("PGSSLMODE", "require")
+    return psycopg2.connect(raw)
 
 
 def db_init():
