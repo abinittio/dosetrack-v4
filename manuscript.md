@@ -23,9 +23,9 @@ Dis-Solved, Independent Research
 
 ## 1. Introduction
 
-Lisdexamfetamine dimesylate (LDX; Vyvanse, Elvanse) is a therapeutically inactive lysine-conjugated prodrug of d-amphetamine that is converted enzymatically following oral absorption [1]. The prodrug design confers a pharmacokinetic profile that is more gradual in onset and less susceptible to dose-dumping than immediate-release amphetamine formulations, properties that are clinically relevant for both therapeutic efficacy and abuse deterrence in attention deficit hyperactivity disorder (ADHD) [2, 4, 16]. ADHD affects an estimated 5–7% of children and 2–3% of adults globally [11], and LDX has demonstrated efficacy across age groups in randomised controlled trials [8, 9, 10]. Its prodrug mechanism — enzymatic cleavage by erythrocyte peptidases — renders it pharmacologically inactive until absorbed, providing a rate-limiting conversion step that moderates peak plasma concentrations of the active moiety [14, 15, 18]. Following oral administration, LDX is absorbed intact from the gastrointestinal tract and cleaved by peptidases — primarily in the blood — to release d-amphetamine [14, 15]. The resulting d-AMP profile exhibits a prolonged apparent absorption phase, a broad concentration peak at approximately 3.5–4.5 hours post-dose, and a terminal elimination half-life of roughly 10–11 hours [1, 4, 7].
+Lisdexamfetamine dimesylate (LDX; Vyvanse, Elvanse) is a therapeutically inactive lysine-conjugated prodrug of d-amphetamine that is converted enzymatically following oral absorption [1]. The prodrug design confers a pharmacokinetic profile that is more gradual in onset and less susceptible to dose-dumping than immediate-release amphetamine formulations, properties that are clinically relevant for both therapeutic efficacy and abuse deterrence in attention deficit hyperactivity disorder (ADHD) [2, 4, 10]. ADHD affects an estimated 5–7% of children and 2–3% of adults globally [7], and LDX has demonstrated efficacy across age groups in randomised controlled trials. Its prodrug mechanism — enzymatic cleavage by erythrocyte peptidases — renders it pharmacologically inactive until absorbed, providing a rate-limiting conversion step that moderates peak plasma concentrations of the active moiety [9]. Following oral administration, LDX is absorbed intact from the gastrointestinal tract and cleaved by peptidases — primarily in the blood — to release d-amphetamine [9]. The resulting d-AMP profile exhibits a prolonged apparent absorption phase, a broad concentration peak at approximately 3.5–4.5 hours post-dose, and a terminal elimination half-life of roughly 10–11 hours [1, 4].
 
-Despite the clinical importance of LDX across the approved dose range (30–70 mg in children; up to 70 mg in adults for ADHD; 50–70 mg for binge eating disorder), quantitative mechanistic modelling of the prodrug conversion kinetics and their interaction with food-induced absorption changes has received limited open scientific attention. Published population pharmacokinetic analyses of LDX have generally been conducted on proprietary clinical trial datasets and reported as regulatory-directed summaries, limiting independent replication and prospective use for clinical simulation [5, 34, 35]. The empirical observation that food delays but does not reduce LDX absorption — increasing Tmax by approximately 0.9 hours while leaving Cmax and AUC unchanged — has been well characterised [1, 3, 19, 20], but the mechanistic basis for this delay (a reduction in the first-order gastric absorption rate constant ka) has not been formally incorporated into a publicly validated predictive model.
+Despite the clinical importance of LDX across the approved dose range (30–70 mg in children; up to 70 mg in adults for ADHD; 50–70 mg for binge eating disorder), quantitative mechanistic modelling of the prodrug conversion kinetics and their interaction with food-induced absorption changes has received limited open scientific attention. Published population pharmacokinetic analyses of LDX have generally been conducted on proprietary clinical trial datasets and reported as regulatory-directed summaries, limiting independent replication and prospective use for clinical simulation [5, 22]. The empirical observation that food delays but does not reduce LDX absorption — increasing Tmax by approximately 0.9 hours while leaving Cmax and AUC unchanged — has been well characterised [1, 3, 11], but the mechanistic basis for this delay (a reduction in the first-order gastric absorption rate constant ka) has not been formally incorporated into a publicly validated predictive model.
 
 Mechanistic pharmacokinetic models, when constructed from first principles using published physiological and drug-specific parameters, offer several advantages over purely empirical approaches. They are inherently transparent: each parameter carries a biological interpretation and a literature source. They are prospectively predictive: because no parameters are fitted to the validation data, the model's performance constitutes a genuine out-of-sample test rather than a goodness-of-fit metric. And they are extensible: additional compartments, drug interactions, or disease-state modifications can be incorporated without restarting a fitting exercise.
 
@@ -71,9 +71,9 @@ All model parameters were fixed to values obtained from the primary published li
 
 The absorption rate constants for fasting ($k_a = 0.85$ h⁻¹) and fed ($k_a = 0.50$ h⁻¹) conditions were taken directly from the human pharmacokinetic study of Pennick (2010) [1], as was the bioavailability fraction $F = 0.96$. The terminal half-life anchor of 11 hours [1] was used to derive the apparent first-order elimination rate $K_E = \ln(2)/11 = 0.0630$ h⁻¹, which in turn defined $V_{max,elim} = K_E \cdot V_1 \cdot K_{m,elim}$. The apparent conversion rate constant $k_{conv,apparent} = 2.0$ h⁻¹ was chosen to reproduce the characteristic shape of the d-AMP Tmax (~3.5–4 h) for a fasting 70 kg adult at 70 mg, consistent with the Krishnan and Zhang (2008) dataset [3].
 
-Volume of distribution ($V_d = 3.5$ L/kg) and blood volume ($V_{blood} = 0.07$ L/kg) were assigned from standard physiological values for amphetamine [1, 5]. The central compartment volume $V_1$ was set as $V_d / (1 + V_{2\,ratio})$ with $V_{2\,ratio} = 1.5$, and the peripheral volume $V_2 = V_{2\,ratio} \cdot V_1$. All volumetric parameters were scaled linearly with body weight in kilograms [31, 32, 33], a standard first approximation for the weight range represented in the validation datasets (34–70 kg). Simulations for paediatric datasets used the mean reported body weight of 34 kg (Boellner et al. 2010 [2]); adult simulations used 70 kg. Complete parameter values and their sources are provided in Table 1.
+Volume of distribution ($V_d = 3.5$ L/kg) and blood volume ($V_{blood} = 0.07$ L/kg) were assigned from standard physiological values for amphetamine [1, 5]. The central compartment volume $V_1$ was set as $V_d / (1 + V_{2\,ratio})$ with $V_{2\,ratio} = 1.5$, and the peripheral volume $V_2 = V_{2\,ratio} \cdot V_1$. All volumetric parameters were scaled linearly with body weight in kilograms [20, 21], a standard first approximation for the weight range represented in the validation datasets (34–70 kg). Simulations for paediatric datasets used the mean reported body weight of 34 kg (Boellner et al. 2010 [2]); adult simulations used 70 kg. Complete parameter values and their sources are provided in Table 1.
 
-The ODE system was integrated numerically using a fixed-step fourth-order Runge-Kutta (RK4) scheme with a time step of 0.01 h [29, 30], implemented in Python within the dosetrack package. The integration was run from time 0 to 72 h for each simulation scenario. Cmax was defined as the maximum concentration in $A_1/V_1$ over the simulated interval; Tmax as the time of that maximum; AUC as the trapezoidal integral of $C_1(t)$ from 0 to 72 h; and simulated half-life as the time for $C_1$ to decline from Cmax to Cmax/2 on the descending limb.
+The ODE system was integrated numerically using a fixed-step fourth-order Runge-Kutta (RK4) scheme with a time step of 0.01 h [18, 19], implemented in Python within the dosetrack package. The integration was run from time 0 to 72 h for each simulation scenario. Cmax was defined as the maximum concentration in $A_1/V_1$ over the simulated interval; Tmax as the time of that maximum; AUC as the trapezoidal integral of $C_1(t)$ from 0 to 72 h; and simulated half-life as the time for $C_1$ to decline from Cmax to Cmax/2 on the descending limb.
 
 ### 2.3 Validation Datasets
 
@@ -113,7 +113,7 @@ $$MAPE = \frac{1}{N} \sum_{i=1}^{N} \left| \frac{sim_i - obs_i}{obs_i} \right| \
 
 Individual percentage errors were also reported to characterise the direction of bias. To quantify uncertainty in the MAPE estimates arising from inter-subject variability in the published reference values, a parametric Monte Carlo procedure was employed: for each of the 10,000 bootstrap iterations, observed Cmax and AUC values were sampled independently from a normal distribution $\mathcal{N}(\mu_{obs}, \sigma_{obs})$ where $\mu_{obs}$ and $\sigma_{obs}$ were taken from the published mean and standard deviation (or, for the Dolder dataset, the SD back-calculated from the 95% CI as (upper − lower)/3.92). The MAPE was recomputed for each iteration against fixed simulation outputs, yielding a 95% percentile confidence interval.
 
-To evaluate whether the prodrug MM model offers a substantive advantage over a simpler one-compartment first-order model, parallel simulations were conducted using the analytical Bateman solution (one-compartment, first-order absorption and elimination) with the same fasting ka and published KE. Model comparison used a log-likelihood proxy based on the sum of squared log-prediction errors; since both models have zero free parameters fitted to the validation data, the AIC difference simplifies to $n \cdot \ln(RSS_{log,linear}/RSS_{log,MM})$ [40, 41]. Predictive accuracy was additionally characterised by MAPE as recommended for pharmacokinetic model evaluation [42, 43].
+To evaluate whether the prodrug MM model offers a substantive advantage over a simpler one-compartment first-order model, parallel simulations were conducted using the analytical Bateman solution (one-compartment, first-order absorption and elimination) with the same fasting ka and published KE. Model comparison used a log-likelihood proxy based on the sum of squared log-prediction errors; since both models have zero free parameters fitted to the validation data, the AIC difference simplifies to $n \cdot \ln(RSS_{log,linear}/RSS_{log,MM})$ [26, 27]. Predictive accuracy was additionally characterised by MAPE as recommended for pharmacokinetic model evaluation [28, 29].
 
 AUC was computed as the trapezoidal integral from 0 to 24 h plus a tail extrapolation $C(24\,\text{h}) / k_e$, using the published elimination rate $k_e = \ln(2)/11 = 0.0630$ h⁻¹. This approach avoids contamination of the AUC estimate by the spurious redistribution tail that the 2-cmt model produces beyond approximately 24 h (see Section 5, Limitations). No statistical significance testing was performed, as the purpose of the analysis is predictive validation rather than hypothesis testing.
 
@@ -165,17 +165,17 @@ At therapeutic doses, the $K_{m,elim}$ value (0.3 mg/L) is substantially higher 
 
 ## 4. Discussion
 
-This study presents a mechanistic, parameter-fixed pharmacokinetic model for LDX that achieves Cmax MAPE of 9.1% and AUC MAPE of 10.9% across six independent dose-dataset combinations spanning a threefold weight range, a sevenfold dose range, and at least three distinct prandial conditions. To the authors' knowledge, this is the first fully open, parameter-fixed predictive model for LDX PK to be validated against multiple independent published datasets and described in a peer-reviewed manuscript.
+This study presents a mechanistic, parameter-fixed pharmacokinetic model for LDX that achieves Cmax MAPE of 9.1% and AUC MAPE of 45.9% across six independent dose-dataset combinations spanning a threefold weight range, a sevenfold dose range, and at least three distinct prandial conditions. To the authors' knowledge, this is the first fully open, parameter-fixed predictive model for LDX PK to be validated against multiple independent published datasets and described in a peer-reviewed manuscript.
 
 The principal novelty of this work lies in two areas: first, the strictly predictive nature of the validation (no parameters were fitted to the validation data), and second, the first-principles food effect back-calculation, which recovers the prandial state of each published study cohort with high internal consistency.
 
 **Comparison with published LDX PK models.** The foundational pharmacokinetic characterisation of LDX was provided by Pennick (2010) [1], who described the enzymatic conversion kinetics and established the reference parameters for absorption rate constants, bioavailability, and half-life. Ermer et al. (2010, 2016) [4, 5] subsequently provided comprehensive non-compartmental analyses demonstrating dose-proportionality and low inter-subject variability. These empirical descriptions, while rigorous, do not provide a mechanistic predictive framework that can be applied to individual patients with varying body weights, prandial states, or dose regimens without interpolation assumptions. The present model addresses this gap by embedding the published parameter estimates into a biologically grounded ODE system whose outputs are continuous functions of dose, weight, and $k_a$.
 
-The two-compartment architecture is standard for amphetamine-class compounds [5, 23, 24] and was chosen as the minimal structure capable of capturing the distribution phase that separates the Cmax peak from the terminal elimination phase. A one-compartment model would underestimate the breadth of the concentration peak and overestimate the early post-peak decline. The Michaelis-Menten kinetics for both conversion and elimination are mechanistically appropriate: LDX is converted by peptidases (principally in erythrocytes) with established saturable kinetics, and amphetamine is eliminated partly by renal excretion and partly by hepatic oxidation, both of which exhibit concentration-dependent rates at supratherapeutic concentrations [1, 5].
+The two-compartment architecture is standard for amphetamine-class compounds [5, 12, 13] and was chosen as the minimal structure capable of capturing the distribution phase that separates the Cmax peak from the terminal elimination phase. A one-compartment model would underestimate the breadth of the concentration peak and overestimate the early post-peak decline. The Michaelis-Menten kinetics for both conversion and elimination are mechanistically appropriate: LDX is converted by peptidases (principally in erythrocytes) with established saturable kinetics, and amphetamine is eliminated partly by renal excretion and partly by hepatic oxidation, both of which exhibit concentration-dependent rates at supratherapeutic concentrations [1, 5].
 
 **Mechanistic value of the food effect analysis.** The standard pharmacokinetic treatment of the LDX food effect is to present two sets of parameters — fasting and fed — and to note that food delays Tmax by approximately one hour without altering Cmax or AUC [1, 3]. This binary description, while practically useful, does not explain the intermediate Tmax values observed in studies that report mixed or incompletely standardised prandial protocols. The back-calculation methodology introduced here bridges this gap by treating $k_a$ as a continuous function of prandial state bounded by the two reference values. The analytical Tmax formula provides a closed-form inversion that requires no additional numerical optimisation and is transparent to any reader with basic PK knowledge.
 
-The finding that fasting paediatric subjects exhibit back-calculated $k_a$ values closer to the fasting reference than fasting adult subjects (0.72–0.76 versus 0.64–0.67 h⁻¹) is consistent with published physiological data on age-related differences in gastric emptying and luminal fat content [7]. This consistency lends biological credibility to the $k_a$ back-calculation as a mechanistic inference rather than a purely statistical fitting artefact.
+The finding that fasting paediatric subjects exhibit back-calculated $k_a$ values closer to the fasting reference than fasting adult subjects (0.72–0.76 versus 0.64–0.67 h⁻¹) is consistent with the known physiological differences in gastric emptying between children and adults. This consistency lends biological credibility to the $k_a$ back-calculation as a mechanistic inference rather than a purely statistical fitting artefact.
 
 **Dose-proportionality from first principles.** The empirical dose-proportionality of d-AMP PK following LDX has been well documented [4] but has not previously been derived from a mechanistic model. In the present framework, dose-proportionality emerges because the $K_{m,conv}$ and $K_{m,elim}$ values are both large relative to the substrate concentrations achieved at therapeutic doses, ensuring that both the conversion and elimination processes operate in the linear (first-order) regime. This is a stronger result than the empirical observation alone, because it predicts the range over which proportionality should hold (doses where concentrations remain well below $K_m$) and identifies the dose at which deviations from proportionality would be expected to emerge.
 
@@ -209,8 +209,6 @@ The open-source implementation, available at dosetrack.dis-solved.com and on Git
 
 ## References
 
-### Validation datasets and LDX clinical pharmacology
-
 1. Pennick M. Absorption of lisdexamfetamine dimesylate and its enzymatic conversion to d-amphetamine. *Neuropsychiatr Dis Treat*. 2010;6:317–327.
 
 2. Boellner SW, Stark JG, Krishnan S, Zhang Y. Lisdexamfetamine dimesylate and mixed amphetamine salts extended-release in children with ADHD: a double-blind, placebo-controlled, crossover analog classroom study. *Clin Ther*. 2010;32(2):252–264.
@@ -223,97 +221,51 @@ The open-source implementation, available at dosetrack.dis-solved.com and on Git
 
 6. Dolder PC, Strajhar P, Liechti ME, Rentsch KM. Pharmacokinetics and pharmacodynamics of lisdexamfetamine compared with D-amphetamine in healthy subjects. *Front Pharmacol*. 2017;8:617.
 
-7. Ermer J, Adeyi BA, Pucci ML. Pharmacokinetic variability of amphetamine salts: shire data on file and published literature. *Postgrad Med*. 2010;122(3):16–24.
+7. Polanczyk GV, Willcutt EG, Salum GA, Kieling C, Rohde LA. ADHD prevalence estimates across three decades: an updated systematic review and meta-regression analysis. *Int J Epidemiol*. 2014;43(2):434–442.
 
-8. Biederman J, Boellner SW, Childress A, Lopez FA, Krishnan S, Zhang Y. Lisdexamfetamine dimesylate and mixed amphetamine salts extended-release in children with ADHD: a double-blind, placebo-controlled, crossover analog classroom study. *Biol Psychiatry*. 2007;62(9):970–976.
+8. Cortese S, Adamo N, Del Giovane C, et al. Comparative efficacy and tolerability of medications for attention-deficit hyperactivity disorder in children, adolescents, and adults: a systematic review and network meta-analysis. *Lancet Psychiatry*. 2018;5(9):727–738.
 
-9. Adler LA, Goodman DW, Kollins SH, et al. Double-blind, placebo-controlled study of the efficacy and safety of lisdexamfetamine dimesylate in adults with attention-deficit/hyperactivity disorder. *J Clin Psychiatry*. 2008;69(9):1364–1373.
+9. Rautio J, Kumpulainen H, Heimbach T, et al. Prodrugs: design and clinical applications. *Nat Rev Drug Discov*. 2008;7(3):255–270.
 
-10. Wigal T, Brams M, Gasior M, et al. Randomized, double-blind, placebo-controlled, crossover study of the efficacy and safety of lisdexamfetamine dimesylate in adults with attention-deficit/hyperactivity disorder. *J Clin Psychopharmacol*. 2010;30(5):518–525.
+10. Heal DJ, Smith SL, Gosden J, Nutt DJ. Amphetamine, past and present — a pharmacological and clinical perspective. *J Psychopharmacol*. 2013;27(6):479–496.
 
-### ADHD epidemiology and treatment context
+11. Singh BN. Effects of food on clinical pharmacokinetics. *Clin Pharmacokinet*. 1999;37(3):213–255.
 
-11. Polanczyk GV, Willcutt EG, Salum GA, Kieling C, Rohde LA. ADHD prevalence estimates across three decades: an updated systematic review and meta-regression analysis. *Int J Epidemiol*. 2014;43(2):434–442.
+12. Rowland M, Tozer TN. *Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications*. 4th ed. Philadelphia: Lippincott Williams & Wilkins; 2010.
 
-12. Cortese S, Adamo N, Del Giovane C, et al. Comparative efficacy and tolerability of medications for attention-deficit hyperactivity disorder in children, adolescents, and adults: a systematic review and network meta-analysis. *Lancet Psychiatry*. 2018;5(9):727–738.
+13. Gibaldi M, Perrier D. *Pharmacokinetics*. 2nd ed. New York: Marcel Dekker; 1982.
 
-13. Faraone SV, Rostain AL, Montano CB, Mason O, Antshel KM, Newcorn JH. Systematic review: nonmedical use of prescription stimulants: risk factors, outcomes, and risk reduction strategies. *J Am Acad Child Adolesc Psychiatry*. 2020;59(1):100–112.
+14. Holford NHG, Sheiner LB. Understanding the dose-effect relationship: clinical application of pharmacokinetic-pharmacodynamic models. *Clin Pharmacokinet*. 1981;6(6):429–453.
 
-### Prodrug pharmacology and abuse deterrence
+15. Bonate PL. *Pharmacokinetic-Pharmacodynamic Modeling and Simulation*. 2nd ed. New York: Springer; 2011.
 
-14. Rautio J, Kumpulainen H, Heimbach T, et al. Prodrugs: design and clinical applications. *Nat Rev Drug Discov*. 2008;7(3):255–270.
+16. Meibohm B, Derendorf H. Basic concepts of pharmacokinetic/pharmacodynamic (PK/PD) modelling. *Int J Clin Pharmacol Ther*. 1997;35(10):401–413.
 
-15. Stella VJ. Prodrugs: some thoughts and current issues. *J Pharm Sci*. 2010;99(12):4755–4765.
+17. Michaelis L, Menten ML. Die Kinetik der Invertinwirkung. *Biochem Z*. 1913;49:333–369.
 
-16. Heal DJ, Smith SL, Gosden J, Nutt DJ. Amphetamine, past and present — a pharmacological and clinical perspective. *J Psychopharmacol*. 2013;27(6):479–496.
+18. Press WH, Teukolsky SA, Vetterling WT, Flannery BP. *Numerical Recipes: The Art of Scientific Computing*. 3rd ed. Cambridge: Cambridge University Press; 2007.
 
-17. Stahl SM. L-methylfolate: a vitamin for your monoamines. *J Clin Psychiatry*. 2008;69(9):1352–1353. [Note: this reference was used as a placeholder — replace with Stahl SM. Mechanism of action of lisdexamfetamine dimesylate. *CNS Spectr*. 2008;13(12):1022–1025.]
+19. Butcher JC. *Numerical Methods for Ordinary Differential Equations*. 3rd ed. Chichester: Wiley; 2016.
 
-18. Krishnan S, Moncrief S. An evaluation of the cytochrome P450 inhibition potential of lisdexamfetamine in human liver microsomes. *Drug Metab Dispos*. 2007;35(1):180–184.
+20. West GB, Brown JH, Enquist BJ. A general model for the origin of allometric scaling laws in biology. *Science*. 1997;276(5309):122–126.
 
-### Food effect pharmacokinetics
+21. Mahmood I, Balian JD. The pharmacokinetic principles behind scaling from preclinical results to phase I protocols. *Xenobiotica*. 1999;29(6):559–574.
 
-19. Singh BN. Effects of food on clinical pharmacokinetics. *Clin Pharmacokinet*. 1999;37(3):213–255.
+22. Sheiner LB, Rosenberg B, Marathe VV. Estimation of population characteristics of pharmacokinetic parameters from routine clinical data. *J Pharmacokinet Biopharm*. 1977;5(5):445–479.
 
-20. Fleisher D, Li C, Zhou Y, Pao LH, Karim A. Drug, meal and formulation interactions influencing drug absorption after oral administration. *Clin Pharmacokinet*. 1999;36(3):233–254.
+23. Karlsson MO, Sheiner LB. The importance of modeling interoccasion variability in population pharmacokinetic analyses. *J Pharmacokinet Biopharm*. 1993;21(6):735–750.
 
-21. Koziolek M, Grimm M, Becker D, et al. Investigation of pH and temperature profiles in the GI tract of fasted human subjects using the SmartPill®. *J Pharm Sci*. 2015;104(9):2855–2863.
+24. Anderson BJ, Holford NHG. Mechanism-based concepts of size and maturity in pharmacokinetics. *Annu Rev Pharmacol Toxicol*. 2008;48:303–332.
 
-22. Varma MVS, Panchagnula R. Enhanced oral paclitaxel absorption with vitamin E-TPGS: effect on solubility and permeability in vitro, in situ and in vivo. *Eur J Pharm Sci*. 2005;25(4-5):445–453. [Placeholder — replace with appropriate gastric emptying reference, e.g., Hellström PM, Grybäck P, Jacobsson H. The physiology of gastric emptying. *Best Pract Res Clin Anaesthesiol*. 2006;20(3):397–407.]
+25. Bergstrand M, Hooker AC, Wallin JE, Karlsson MO. Prediction-corrected visual predictive checks for diagnosing nonlinear mixed-effects models. *AAPS J*. 2011;13(2):143–151.
 
-### Compartmental PK modelling theory
+26. Akaike H. A new look at the statistical model identification. *IEEE Trans Autom Control*. 1974;19(6):716–723.
 
-23. Rowland M, Tozer TN. *Clinical Pharmacokinetics and Pharmacodynamics: Concepts and Applications*. 4th ed. Philadelphia: Lippincott Williams & Wilkins; 2010.
+27. Burnham KP, Anderson DR. *Model Selection and Multimodel Inference: A Practical Information-Theoretic Approach*. 2nd ed. New York: Springer; 2002.
 
-24. Gibaldi M, Perrier D. *Pharmacokinetics*. 2nd ed. New York: Marcel Dekker; 1982.
+28. Hyndman RJ, Koehler AB. Another look at measures of forecast accuracy. *Int J Forecast*. 2006;22(4):679–688.
 
-25. Holford NHG, Sheiner LB. Understanding the dose-effect relationship: clinical application of pharmacokinetic-pharmacodynamic models. *Clin Pharmacokinet*. 1981;6(6):429–453.
-
-26. Bonate PL. *Pharmacokinetic-Pharmacodynamic Modeling and Simulation*. 2nd ed. New York: Springer; 2011.
-
-27. Meibohm B, Derendorf H. Basic concepts of pharmacokinetic/pharmacodynamic (PK/PD) modelling. *Int J Clin Pharmacol Ther*. 1997;35(10):401–413.
-
-28. Michaelis L, Menten ML. Die Kinetik der Invertinwirkung. *Biochem Z*. 1913;49:333–369. [Original Michaelis-Menten kinetics paper.]
-
-### Numerical methods
-
-29. Press WH, Teukolsky SA, Vetterling WT, Flannery BP. *Numerical Recipes: The Art of Scientific Computing*. 3rd ed. Cambridge: Cambridge University Press; 2007.
-
-30. Butcher JC. *Numerical Methods for Ordinary Differential Equations*. 3rd ed. Chichester: Wiley; 2016.
-
-### Allometric scaling
-
-31. West GB, Brown JH, Enquist BJ. A general model for the origin of allometric scaling laws in biology. *Science*. 1997;276(5309):122–126.
-
-32. Mahmood I, Balian JD. The pharmacokinetic principles behind scaling from preclinical results to phase I protocols. *Xenobiotica*. 1999;29(6):559–574.
-
-33. Emoto C, Fukuda T, Johnson TN, Neuhoff S, Vinks AA. Application of a physiologically-based pharmacokinetic model to dose recommendation for pediatric patients. *CPT Pharmacometrics Syst Pharmacol*. 2014;3:e133.
-
-### Population PK and pharmacometrics
-
-34. Sheiner LB, Rosenberg B, Marathe VV. Estimation of population characteristics of pharmacokinetic parameters from routine clinical data. *J Pharmacokinet Biopharm*. 1977;5(5):445–479.
-
-35. Mould DR, Upton RN. Basic concepts in population modeling, simulation, and model-based drug development. *CPT Pharmacometrics Syst Pharmacol*. 2012;1:e6.
-
-36. Karlsson MO, Sheiner LB. The importance of modeling interoccasion variability in population pharmacokinetic analyses. *J Pharmacokinet Biopharm*. 1993;21(6):735–750.
-
-37. Anderson BJ, Holford NHG. Mechanism-based concepts of size and maturity in pharmacokinetics. *Annu Rev Pharmacol Toxicol*. 2008;48:303–332.
-
-### Open-source pharmacokinetic modelling and validation
-
-38. Fidler M, Wilkins JJ, Hooijmaijers R, et al. Nonlinear mixed-effects model development and simulation using nlmixr and related R open-source packages. *CPT Pharmacometrics Syst Pharmacol*. 2019;8(9):621–633.
-
-39. Bergstrand M, Hooker AC, Wallin JE, Karlsson MO. Prediction-corrected visual predictive checks for diagnosing nonlinear mixed-effects models. *AAPS J*. 2011;13(2):143–151.
-
-40. Akaike H. A new look at the statistical model identification. *IEEE Trans Autom Control*. 1974;19(6):716–723. [AIC criterion used for model comparison.]
-
-41. Burnham KP, Anderson DR. *Model Selection and Multimodel Inference: A Practical Information-Theoretic Approach*. 2nd ed. New York: Springer; 2002.
-
-### MAPE and predictive validation methodology
-
-42. Hyndman RJ, Koehler AB. Another look at measures of forecast accuracy. *Int J Forecast*. 2006;22(4):679–688.
-
-43. Sheiner LB, Beal SL. Some suggestions for measuring predictive performance. *J Pharmacokinet Biopharm*. 1981;9(4):503–512.
+29. Sheiner LB, Beal SL. Some suggestions for measuring predictive performance. *J Pharmacokinet Biopharm*. 1981;9(4):503–512.
 
 ---
 
