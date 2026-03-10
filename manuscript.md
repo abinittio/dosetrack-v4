@@ -327,9 +327,22 @@ The open-source implementation, available at dosetrack.dis-solved.com and on Git
 
 ---
 
-*Manuscript word count (excluding tables and references): approximately 3,500 words.*
+---
 
-*Open-source code: https://github.com/abinittio/dosetrack-v4 (MIT licence)*
-*Interactive simulation tool: https://dosetrack.dis-solved.com*
+## Code and Data Availability
+
+The complete source code for the dosetrack package, simulation engine, validation scripts, and bootstrap analysis is publicly available at https://github.com/abinittio/dosetrack-v4 under the MIT licence (commit `f021f52`). The interactive simulation tool is deployed at https://dosetrack.dis-solved.com. All validation datasets used in this study were extracted from previously published manuscripts cited in the References; no primary data were generated. The computational environment used for all analyses was Python 3.12.4 with NumPy ≥1.24, SciPy, and Matplotlib ≥3.7. Full dependency specifications are provided in `requirements.txt` in the repository.
+
+---
+
+## Figure Legends
+
+**Figure 1.** Simulated d-amphetamine plasma concentration–time profiles (prodrug 2-compartment MM model) for six validation scenarios. Solid circles denote published mean Cmax values; error bars denote ±1 SD (or 95% CI for Dolder 2017). Tmax values are marked by vertical dashed lines. All simulations used fasting ka = 0.85 h⁻¹.
+
+**Figure 2.** First-principles food effect back-calculation. Panel A: analytical Tmax as a function of absorption rate constant ka (solid curve), with fasting and fed reference values shown as vertical dashed lines. Coloured points indicate the back-calculated ka for each study cohort. Panel B: bar chart of back-calculated ka values per cohort with implied % fed equivalent. Blue = fasting protocol; amber = pooled/mixed protocol; green = standardised meal. The rank ordering from highest (most fasted) to lowest (most fed) ka is fully consistent with each study's published prandial protocol.
+
+---
+
+*Manuscript word count (excluding tables, references, and figure legends): approximately 3,600 words.*
 
 *The authors declare no conflicts of interest. No funding was received for this work.*
