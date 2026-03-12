@@ -5,77 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DoseTrack V4 — PK/PD Simulation Engine</title>
     <meta name="description" content="Mechanistic PK/PD simulation for lisdexamfetamine. Prodrug 2-compartment model, RK4 solver, clinically validated (9.1% Cmax MAPE).">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                extend: {
+                    colors: {
+                        brand: { 50:'#effefb', 100:'#c7fff1', 200:'#90ffe3', 300:'#51f7d2', 400:'#14b8a6', 500:'#0d9488', 600:'#0f766e', 700:'#115e59', 800:'#134e4a', 900:'#1a1a2e' },
+                        navy: '#1a1a2e',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         html { scroll-behavior: smooth; }
-        body { background: #0f172a; }
-        .glass { background: rgba(255,255,255,0.06); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
-        .btn-primary { display:inline-block; background:#14b8a6; color:#0f172a; font-weight:700; padding:14px 28px; border-radius:9999px; transition:all 0.3s; }
-        .btn-primary:hover { background:#5eead4; transform:scale(1.05); }
-        .btn-secondary { display:inline-block; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:#fff; font-weight:700; padding:14px 28px; border-radius:9999px; transition:all 0.3s; }
-        .btn-secondary:hover { background:rgba(255,255,255,0.15); }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #ffffff; }
 
-        /* Report styling */
-        #report h1 { color:#5eead4; font-size:1.5rem; font-weight:800; margin-top:2em; margin-bottom:0.5em; }
-        #report h2 { color:#5eead4; font-size:1.25rem; font-weight:700; margin-top:1.8em; margin-bottom:0.5em; border-bottom:1px solid rgba(94,234,212,0.12); padding-bottom:6px; }
-        #report h3 { color:#e2e8f0; font-size:1.05rem; font-weight:600; margin-top:1.4em; }
-        #report h4 { color:#94a3b8; font-size:0.95rem; font-weight:600; margin-top:1.2em; }
-        #report p { color:#94a3b8; line-height:1.75; margin-bottom:0.8em; }
-        #report strong { color:#e2e8f0; }
-        #report em { color:#5eead4; }
-        #report a { color:#5eead4; text-decoration:underline; }
-        #report code { background:rgba(255,255,255,0.06); padding:2px 6px; border-radius:4px; font-size:0.82em; color:#5eead4; font-family:monospace; }
-        #report pre { background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:16px; overflow-x:auto; margin:1em 0; }
+        .btn-primary { display:inline-block; background:#0f766e; color:#fff; font-weight:700; padding:14px 28px; border-radius:9999px; transition:all 0.3s; }
+        .btn-primary:hover { background:#0d9488; transform:scale(1.05); }
+        .btn-secondary { display:inline-block; background:#f8fafc; border:1px solid #e2e8f0; color:#1a1a2e; font-weight:700; padding:14px 28px; border-radius:9999px; transition:all 0.3s; }
+        .btn-secondary:hover { background:#f1f5f9; }
+
+        .stat-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:1rem; padding:1.5rem; text-align:center; transition:all 0.3s; }
+        .stat-card:hover { border-color:#14b8a6; box-shadow:0 4px 24px rgba(20,184,166,0.08); }
+
+        /* Report styling — light theme */
+        #report h1 { color:#0f766e; font-size:1.5rem; font-weight:800; margin-top:2em; margin-bottom:0.5em; }
+        #report h2 { color:#0f766e; font-size:1.25rem; font-weight:700; margin-top:1.8em; margin-bottom:0.5em; border-bottom:1px solid #e2e8f0; padding-bottom:6px; }
+        #report h3 { color:#1a1a2e; font-size:1.05rem; font-weight:600; margin-top:1.4em; }
+        #report h4 { color:#475569; font-size:0.95rem; font-weight:600; margin-top:1.2em; }
+        #report p { color:#475569; line-height:1.75; margin-bottom:0.8em; }
+        #report strong { color:#1a1a2e; }
+        #report em { color:#0f766e; }
+        #report a { color:#0f766e; text-decoration:underline; }
+        #report code { background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:0.82em; color:#0f766e; font-family:monospace; }
+        #report pre { background:#1a1a2e; border:1px solid #e2e8f0; border-radius:8px; padding:16px; overflow-x:auto; margin:1em 0; }
         #report pre code { background:none; padding:0; color:#e2e8f0; }
         #report table { width:100%; border-collapse:collapse; margin:1em 0; font-size:0.82em; }
-        #report th { color:#5eead4; border-bottom:1px solid rgba(94,234,212,0.2); padding:8px 10px; text-align:left; }
-        #report td { color:#94a3b8; border-bottom:1px solid rgba(255,255,255,0.04); padding:8px 10px; }
-        #report ul, #report ol { color:#94a3b8; padding-left:1.4em; margin-bottom:0.8em; }
+        #report th { color:#0f766e; border-bottom:2px solid #e2e8f0; padding:8px 10px; text-align:left; font-weight:700; }
+        #report td { color:#475569; border-bottom:1px solid #f1f5f9; padding:8px 10px; }
+        #report ul, #report ol { color:#475569; padding-left:1.4em; margin-bottom:0.8em; }
         #report li { margin-bottom:0.3em; line-height:1.65; }
-        #report hr { border-color:rgba(255,255,255,0.06); margin:2em 0; }
-        #report blockquote { border-left:3px solid #5eead4; padding:8px 16px; margin:1em 0; background:rgba(94,234,212,0.04); border-radius:0 6px 6px 0; }
-        #report blockquote p { color:#94a3b8; margin:0; }
+        #report hr { border-color:#e2e8f0; margin:2em 0; }
+        #report blockquote { border-left:3px solid #14b8a6; padding:8px 16px; margin:1em 0; background:#effefb; border-radius:0 6px 6px 0; }
+        #report blockquote p { color:#475569; margin:0; }
         #report img { max-width:100%; border-radius:8px; margin:1em 0; }
     </style>
 </head>
-<body class="text-white min-h-screen">
+<body class="text-navy min-h-screen">
     <!-- Nav -->
-    <nav class="fixed top-0 w-full z-50 glass">
+    <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-xl font-bold text-teal-400">DoseTrack V4</a>
-            <div class="flex space-x-4 text-sm">
-                <a href="#overview" class="text-gray-300 hover:text-teal-400 transition">Overview</a>
-                <a href="#report" class="text-gray-300 hover:text-teal-400 transition">Technical Report</a>
+            <a href="#" class="text-xl font-bold text-brand-600">DoseTrack V4</a>
+            <div class="flex items-center space-x-4 text-sm">
+                <a href="#overview" class="text-gray-500 hover:text-brand-600 transition font-medium">Overview</a>
+                <a href="#report" class="text-gray-500 hover:text-brand-600 transition font-medium">Technical Report</a>
                 <a href="https://dosetrack.dis-solved.com" target="_blank" class="btn-primary text-sm !py-2 !px-5">Open App</a>
             </div>
         </div>
     </nav>
 
     <!-- Hero -->
-    <section id="overview" class="pt-32 pb-16 px-6">
+    <section id="overview" class="pt-32 pb-16 px-6 bg-white">
         <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-                DoseTrack <span class="text-teal-400">V4</span>
+            <p class="text-brand-600 font-semibold text-sm uppercase tracking-wider mb-4">PK/PD Simulation Engine</p>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 leading-tight text-navy">
+                DoseTrack <span class="text-brand-600">V4</span>
             </h1>
-            <p class="text-lg text-gray-300 mb-2">Mechanistic PK/PD simulation engine for lisdexamfetamine dimesylate</p>
-            <p class="text-sm text-gray-500 mb-8">Built by <a href="https://dis-solved.com" class="text-teal-400 hover:underline">dis-solved.com</a></p>
+            <p class="text-lg text-gray-500 mb-2">Mechanistic PK/PD simulation engine for lisdexamfetamine dimesylate</p>
+            <p class="text-sm text-gray-400 mb-10">Built by <a href="https://dis-solved.com" class="text-brand-600 hover:underline">dis-solved.com</a></p>
 
             <div class="grid md:grid-cols-4 gap-4 mb-10 max-w-3xl mx-auto">
-                <div class="glass rounded-xl p-5 text-center">
-                    <div class="text-3xl font-bold text-teal-400">9.1%</div>
+                <div class="stat-card">
+                    <div class="text-3xl font-bold text-brand-600">9.1%</div>
                     <div class="text-gray-400 text-xs mt-1">Cmax MAPE</div>
                 </div>
-                <div class="glass rounded-xl p-5 text-center">
-                    <div class="text-3xl font-bold text-teal-400">MM</div>
+                <div class="stat-card">
+                    <div class="text-3xl font-bold text-brand-600">MM</div>
                     <div class="text-gray-400 text-xs mt-1">Michaelis-Menten + 2-cmt</div>
                 </div>
-                <div class="glass rounded-xl p-5 text-center">
-                    <div class="text-3xl font-bold text-teal-400">RK4</div>
+                <div class="stat-card">
+                    <div class="text-3xl font-bold text-brand-600">RK4</div>
                     <div class="text-gray-400 text-xs mt-1">6-variable ODE solver</div>
                 </div>
-                <div class="glass rounded-xl p-5 text-center">
-                    <div class="text-3xl font-bold text-teal-400">3</div>
+                <div class="stat-card">
+                    <div class="text-3xl font-bold text-brand-600">3</div>
                     <div class="text-gray-400 text-xs mt-1">Published datasets</div>
                 </div>
             </div>
@@ -85,24 +104,24 @@
                 <a href="#report" class="btn-secondary">Read Technical Report</a>
                 <a href="https://github.com/abinittio/dosetrack-v4" target="_blank" class="btn-secondary">View Source</a>
             </div>
-            <p class="text-xs text-gray-600">For personal and educational use only. Not medical advice.</p>
+            <p class="text-xs text-gray-400">For personal and educational use only. Not medical advice.</p>
         </div>
     </section>
 
     <!-- Technical Report -->
-    <section id="report" class="pb-20 px-6">
+    <section id="report" class="pb-20 px-6 bg-white">
         <div class="max-w-4xl mx-auto">
-            <div class="glass rounded-2xl p-6 md:p-10">
-                <div id="report-loading" class="text-center text-teal-400 py-12 text-sm">Loading technical report...</div>
+            <div class="bg-gray-50 border border-gray-200 rounded-2xl p-6 md:p-10">
+                <div id="report-loading" class="text-center text-brand-600 py-12 text-sm">Loading technical report...</div>
                 <div id="report-body" style="display:none"></div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="py-8 px-6 border-t border-white/5">
-        <div class="max-w-4xl mx-auto text-center text-gray-600 text-sm">
-            <p>&copy; 2025 <a href="https://dis-solved.com" class="text-teal-400 hover:underline">Dis-Solved Ltd</a>. London, UK.</p>
+    <footer class="py-8 px-6 border-t border-gray-100 bg-white">
+        <div class="max-w-4xl mx-auto text-center text-gray-400 text-sm">
+            <p>&copy; 2025 <a href="https://dis-solved.com" class="text-brand-600 hover:underline">Dis-Solved Ltd</a>. London, UK.</p>
         </div>
     </footer>
 
