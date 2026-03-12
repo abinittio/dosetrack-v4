@@ -151,8 +151,8 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 html, body, .stApp {
-    background: #08111a !important;
-    color: #e2e8f0;
+    background: #ffffff !important;
+    color: #1a1a2e;
     font-family: 'Inter', -apple-system, sans-serif;
 }
 
@@ -160,7 +160,7 @@ html, body, .stApp {
 .block-container { padding-top: 2.5rem; padding-bottom: 2rem; max-width: 860px; }
 
 h1 {
-    color: #f0fdfa !important;
+    color: #1a1a2e !important;
     font-size: 1.6rem !important;
     font-weight: 800 !important;
     letter-spacing: -0.03em !important;
@@ -169,31 +169,31 @@ h1 {
 
 .subtitle {
     font-size: 0.78rem;
-    color: #334155;
+    color: #94a3b8;
     font-weight: 400;
     margin-bottom: 1.6rem;
 }
 
 .stNumberInput input, .stTextInput input, .stDateInput input, .stTimeInput input {
-    background: rgba(255,255,255,0.04) !important;
-    border: 1px solid rgba(255,255,255,0.08) !important;
-    color: #e2e8f0 !important;
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #1a1a2e !important;
     border-radius: 10px !important;
     font-size: 0.95rem !important;
 }
 .stNumberInput input:focus, .stDateInput input:focus,
 .stTimeInput input:focus, .stTextInput input:focus {
-    border-color: rgba(20,184,166,0.4) !important;
-    box-shadow: 0 0 0 2px rgba(20,184,166,0.08) !important;
+    border-color: #14b8a6 !important;
+    box-shadow: 0 0 0 2px rgba(20,184,166,0.12) !important;
 }
 
-label { color: #64748b !important; font-size: 0.82rem !important; }
-.stMarkdown p { color: #94a3b8 !important; }
+label { color: #475569 !important; font-size: 0.82rem !important; }
+.stMarkdown p { color: #64748b !important; }
 
 .stButton > button {
-    background: rgba(15,118,110,0.85) !important;
-    color: #f0fdfa !important;
-    border: 1px solid rgba(20,184,166,0.25) !important;
+    background: #0f766e !important;
+    color: #ffffff !important;
+    border: 1px solid #0d9488 !important;
     border-radius: 10px;
     font-weight: 700;
     font-size: 1rem;
@@ -202,13 +202,13 @@ label { color: #64748b !important; font-size: 0.82rem !important; }
     transition: all 0.18s ease;
 }
 .stButton > button:hover {
-    background: rgba(20,184,166,0.9) !important;
-    box-shadow: 0 0 18px rgba(20,184,166,0.15);
+    background: #0d9488 !important;
+    box-shadow: 0 4px 16px rgba(15,118,110,0.15);
 }
 
 .account-box {
-    background: rgba(20,184,166,0.06);
-    border: 1px solid rgba(20,184,166,0.12);
+    background: #effefb;
+    border: 1px solid #c7fff1;
     border-radius: 14px;
     padding: 20px 24px;
     margin-bottom: 24px;
@@ -216,32 +216,32 @@ label { color: #64748b !important; font-size: 0.82rem !important; }
 .account-name {
     font-size: 1rem;
     font-weight: 700;
-    color: #5eead4;
+    color: #0f766e;
 }
 .account-sub {
     font-size: 0.78rem;
-    color: #334155;
+    color: #94a3b8;
 }
 
 .dose-row {
     display: flex;
     align-items: center;
     padding: 10px 16px;
-    background: rgba(255,255,255,0.025);
+    background: #f8fafc;
     border-radius: 10px;
     margin-bottom: 6px;
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid #e2e8f0;
     font-size: 0.9rem;
-    color: #cbd5e1;
+    color: #1a1a2e;
 }
 .dose-date { color: #64748b; font-size: 0.8rem; min-width: 100px; }
-.dose-time { color: #94a3b8; margin: 0 12px; }
-.dose-mg   { font-weight: 700; color: #5eead4; margin-left: auto; margin-right: 8px; }
+.dose-time { color: #475569; margin: 0 12px; }
+.dose-mg   { font-weight: 700; color: #0f766e; margin-left: auto; margin-right: 8px; }
 
-hr { border-color: rgba(255,255,255,0.05) !important; }
+hr { border-color: #e2e8f0 !important; }
 
 div[data-testid="stMetricValue"] {
-    color: #5eead4 !important;
+    color: #0f766e !important;
     font-weight: 700 !important;
 }
 </style>
@@ -324,9 +324,9 @@ with c4:
 
 if not doses:
     st.markdown("""
-    <div style="text-align:center; padding:70px 0 50px 0; color:#1e3a34;">
+    <div style="text-align:center; padding:70px 0 50px 0; color:#94a3b8;">
         <div style="font-size:2.5rem; margin-bottom:10px;">💊</div>
-        <div style="font-size:0.88rem; font-weight:500; color:#334155;">
+        <div style="font-size:0.88rem; font-weight:500; color:#64748b;">
             Log a dose above to see the simulation curve.
         </div>
     </div>
@@ -367,27 +367,27 @@ last_dose_h = max(d.time_h for d in dose_objects)
 validated_h = last_dose_h + 12.0  # hours from t0
 
 fig, ax = plt.subplots(figsize=(9, 3.8))
-fig.patch.set_facecolor("#08111a")
-ax.set_facecolor("#08111a")
+fig.patch.set_facecolor("#ffffff")
+ax.set_facecolor("#ffffff")
 
-# Zone bands
-ax.axhspan(85, 100, alpha=0.06, color="#ef4444", zorder=1)
-ax.axhspan(65,  85, alpha=0.07, color="#059669", zorder=1)
-ax.axhspan(40,  65, alpha=0.07, color="#10b981", zorder=1)
+# Zone bands — soft pastels on white
+ax.axhspan(85, 100, alpha=0.08, color="#ef4444", zorder=1)
+ax.axhspan(65,  85, alpha=0.06, color="#059669", zorder=1)
+ax.axhspan(40,  65, alpha=0.06, color="#14b8a6", zorder=1)
 ax.axhspan(15,  40, alpha=0.05, color="#f59e0b", zorder=1)
 
 # Threshold
-ax.axhline(40, color="#1e3a34", linewidth=1.0, linestyle="--", zorder=2)
+ax.axhline(40, color="#cbd5e1", linewidth=1.0, linestyle="--", zorder=2)
 
-# Extrapolation region shading (subtle overlay after validated_h)
+# Extrapolation region shading
 if validated_h < sim_end:
-    ax.axvspan(validated_h, sim_end, alpha=0.06, color="#475569", zorder=1)
+    ax.axvspan(validated_h, sim_end, alpha=0.04, color="#94a3b8", zorder=1)
 
 # Dose markers
 for d in doses:
     h = (d["dt"] - t0).total_seconds() / 3600.0
-    ax.axvline(h, color="#334155", linewidth=1, linestyle=":", zorder=2)
-    ax.text(h + 0.15, 97, f"{d['mg']:.0f}mg", color="#475569",
+    ax.axvline(h, color="#cbd5e1", linewidth=1, linestyle=":", zorder=2)
+    ax.text(h + 0.15, 97, f"{d['mg']:.0f}mg", color="#94a3b8",
             fontsize=7.5, va="top", ha="left", zorder=4)
 
 # Split curve at validated_h
@@ -397,48 +397,48 @@ e_arr = result.effect_pct
 mask_val  = t_arr <= validated_h
 mask_ext  = t_arr >= validated_h  # overlap by 1 point so lines connect
 
-# Validated segment — solid, full brightness
-ax.fill_between(t_arr[mask_val], e_arr[mask_val], alpha=0.14, color="#14b8a6", zorder=3)
-ax.plot(t_arr[mask_val], e_arr[mask_val], color="#5eead4", linewidth=2.2, zorder=4)
+# Validated segment — solid teal on white
+ax.fill_between(t_arr[mask_val], e_arr[mask_val], alpha=0.12, color="#14b8a6", zorder=3)
+ax.plot(t_arr[mask_val], e_arr[mask_val], color="#0f766e", linewidth=2.2, zorder=4)
 
 # Extrapolation segment — dashed, muted
 if mask_ext.any():
-    ax.fill_between(t_arr[mask_ext], e_arr[mask_ext], alpha=0.05, color="#94a3b8", zorder=3)
+    ax.fill_between(t_arr[mask_ext], e_arr[mask_ext], alpha=0.04, color="#94a3b8", zorder=3)
     ax.plot(t_arr[mask_ext], e_arr[mask_ext],
-            color="#64748b", linewidth=1.6, linestyle="--", zorder=4)
+            color="#94a3b8", linewidth=1.6, linestyle="--", zorder=4)
 
 # Validated horizon marker
 if validated_h < sim_end:
-    ax.axvline(validated_h, color="#1e3a34", linewidth=1.2, linestyle="-", zorder=3, alpha=0.7)
-    ax.text(validated_h + 0.2, 6, "extrapolation →", color="#334155",
+    ax.axvline(validated_h, color="#cbd5e1", linewidth=1.2, linestyle="-", zorder=3, alpha=0.7)
+    ax.text(validated_h + 0.2, 6, "extrapolation \u2192", color="#94a3b8",
             fontsize=6.5, va="bottom", ha="left", zorder=4, style="italic")
 
 # Zone labels
 for y, label, col in [
     (92, "SUPRA", "#ef4444"),
     (75, "PEAK", "#059669"),
-    (52, "THERAPEUTIC", "#14b8a6"),
+    (52, "THERAPEUTIC", "#0f766e"),
     (27, "SUB", "#f59e0b"),
 ]:
     ax.text(sim_end * 0.995, y, label, color=col, fontsize=6.5,
-            ha="right", va="center", alpha=0.5, zorder=3)
+            ha="right", va="center", alpha=0.6, zorder=3)
 
 # X axis
 n_ticks = min(10, int(sim_end / 4) + 1)
 tick_h = np.linspace(0, sim_end, n_ticks)
 tick_labels = [(t0 + timedelta(hours=float(h))).strftime("%a %H:%M") for h in tick_h]
 ax.set_xticks(tick_h)
-ax.set_xticklabels(tick_labels, rotation=30, ha="right", fontsize=7.5, color="#334155")
+ax.set_xticklabels(tick_labels, rotation=30, ha="right", fontsize=7.5, color="#64748b")
 
 ax.set_ylim(0, 100)
 ax.set_yticks([0, 40, 65, 85, 100])
-ax.set_yticklabels(["0%", "40%", "65%", "85%", "100%"], fontsize=7.5, color="#334155")
+ax.set_yticklabels(["0%", "40%", "65%", "85%", "100%"], fontsize=7.5, color="#64748b")
 ax.set_xlim(0, sim_end)
 
 for spine in ax.spines.values():
     spine.set_visible(False)
-ax.tick_params(colors="#334155", length=0)
-ax.grid(axis="y", color="#111f2e", linewidth=0.8, zorder=0)
+ax.tick_params(colors="#64748b", length=0)
+ax.grid(axis="y", color="#f1f5f9", linewidth=0.8, zorder=0)
 
 fig.tight_layout(pad=1.2)
 st.pyplot(fig, use_container_width=True)
@@ -446,7 +446,7 @@ plt.close(fig)
 
 # Validation footnote
 st.markdown(
-    "<div style='font-size:0.70rem; color:#1e3a34; margin-top:-6px; margin-bottom:8px;'>"
+    "<div style='font-size:0.70rem; color:#94a3b8; margin-top:-6px; margin-bottom:8px;'>"
     "Peak concentration validated against 3 published datasets (MAPE 9.1%). "
     "Terminal phase (dashed) extrapolated — actual clearance faster than modelled. "
     "With regular use, your logged doses calibrate timing to your own pharmacokinetics."
@@ -475,7 +475,7 @@ col_c.metric("Peak effect", f"{result.peak_effect:.0f}%")
 
 st.markdown("<hr>", unsafe_allow_html=True)
 st.markdown(
-    "<div style='font-size:0.72rem; color:#334155; font-weight:600; "
+    "<div style='font-size:0.72rem; color:#64748b; font-weight:600; "
     "text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px;'>"
     "Logged Doses</div>",
     unsafe_allow_html=True,
